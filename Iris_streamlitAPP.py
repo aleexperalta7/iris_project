@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[58]:
 
 
 import streamlit as st
@@ -13,16 +13,50 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
 
 
-# In[2]:
+# In[59]:
 
 
 columns = ['Sepal length', 'Sepal width', 'Petal length', 'Petal width', 'Class_labels'] 
 # Load the data
-df = pd.read_csv('iris.data', names=columns)
+df = pd.read_csv('https://raw.githubusercontent.com/aleexperalta7/Streamlit/main/Iris_project/iris.data', names=columns)
 df.head()
 
 
-# In[3]:
+# In[60]:
+
+
+data = df.values
+X = data[:,(2,3)]
+Y = data[:,4]
+X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.2)
+
+
+# In[61]:
+
+
+def predict(data, model_name):
+    model = joblib.load(f'{model_name}')
+    pipeline= joblib.load('iris_pipeline.sav')
+    transformed_data = pipeline.transform(data)
+    return model.predict(transformed_data)
+
+
+# In[62]:
+
+
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+
+iris_pipeline = Pipeline([("std_scaler", StandardScaler())])
+
+
+# In[63]:
+
+
+X_train_tr = iris_pipeline.fit_transform(X_train)
+
+
+# In[64]:
 
 
 header = st.container()
@@ -31,14 +65,14 @@ inputs = st.container()
 modelTraining = st.container()
 
 
-# In[4]:
+# In[65]:
 
 
 with header:
     st.title('Clasificador flores')
 
 
-# In[5]:
+# In[66]:
 
 
 with dataset:
@@ -46,7 +80,7 @@ with dataset:
     st.write(df.head())
 
 
-# In[6]:
+# In[67]:
 
 
 with inputs:
@@ -59,7 +93,7 @@ with inputs:
     model = sel_col1.selectbox('¿Qué tipo de modelo de Machine Learning quieres usar para tu clasificación?', ['Logistic Regression','Support Vector Machine', 'Decision Tree', 'Voting Classifier'], index = 0)
 
 
-# In[7]:
+# In[68]:
 
 
 with modelTraining:
@@ -69,10 +103,10 @@ with modelTraining:
             'Largo del pétalo' : [petal_length],
             'Ancho del pétalo' : [petal_width]
             })
-        if model == 'Logistic Regression':
-            result = predict(data, 'Log_reg.sav')
-        elif model == 'Support Vector Machine':
+        if model == 'Support Vector Machine':
             result = predict(data, 'SVM.sav')
+        elif model == 'Logistic Regression':
+            result = predict(data, 'Log_reg.sav')
         elif model == 'Decision Tree':
             result = predict(data, 'Dec_tree.sav')
         elif model == 'Voting Classifier':
