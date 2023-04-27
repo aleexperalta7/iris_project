@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[58]:
+# In[12]:
 
 
 import streamlit as st
@@ -11,18 +11,19 @@ from sklearn.datasets import load_iris
 from prediction import predict
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
+from sklearn.linear_model import Perceptron
 
 
-# In[59]:
+# In[13]:
 
 
 columns = ['Sepal length', 'Sepal width', 'Petal length', 'Petal width', 'Class_labels'] 
 # Load the data
-df = pd.read_csv('https://raw.githubusercontent.com/aleexperalta7/iris_project/main/iris.data', names=columns)
+df = pd.read_csv('https://raw.githubusercontent.com/aleexperalta7/Streamlit/main/Iris_project/iris.data', names=columns)
 df.head()
 
 
-# In[60]:
+# In[14]:
 
 
 data = df.values
@@ -31,7 +32,7 @@ Y = data[:,4]
 X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.2)
 
 
-# In[61]:
+# In[15]:
 
 
 def predict(data, model_name):
@@ -41,7 +42,7 @@ def predict(data, model_name):
     return model.predict(transformed_data)
 
 
-# In[62]:
+# In[16]:
 
 
 from sklearn.pipeline import Pipeline
@@ -50,13 +51,13 @@ from sklearn.preprocessing import StandardScaler
 iris_pipeline = Pipeline([("std_scaler", StandardScaler())])
 
 
-# In[63]:
+# In[17]:
 
 
 X_train_tr = iris_pipeline.fit_transform(X_train)
 
 
-# In[64]:
+# In[18]:
 
 
 header = st.container()
@@ -65,14 +66,14 @@ inputs = st.container()
 modelTraining = st.container()
 
 
-# In[65]:
+# In[19]:
 
 
 with header:
     st.title('Clasificador flores')
 
 
-# In[66]:
+# In[20]:
 
 
 with dataset:
@@ -80,7 +81,7 @@ with dataset:
     st.write(df.head())
 
 
-# In[67]:
+# In[21]:
 
 
 with inputs:
@@ -90,10 +91,10 @@ with inputs:
     sel_col1, sel_col2= st.columns(2)
     petal_length = sel_col1.slider('Largo del pétalo', value=1.0, min_value=0.0, max_value = 6.9, step=0.01)
     petal_width = sel_col1.slider('Ancho del pétalo', value=1.0, min_value=0.0, max_value = 2.5, step=0.01)
-    model = sel_col1.selectbox('¿Qué tipo de modelo de Machine Learning quieres usar para tu clasificación?', ['Logistic Regression','Support Vector Machine', 'Decision Tree', 'Voting Classifier'], index = 0)
+    model = sel_col1.selectbox('¿Qué tipo de modelo de Machine Learning quieres usar para tu clasificación?', ['Logistic Regression','Support Vector Machine', 'Decision Tree', 'Voting Classifier', 'Perceptron'], index = 0)
 
 
-# In[68]:
+# In[22]:
 
 
 with modelTraining:
@@ -111,6 +112,8 @@ with modelTraining:
             result = predict(data, 'Dec_tree.sav')
         elif model == 'Voting Classifier':
             result = predict(data, 'vot_clf.sav')
+        elif model == 'Perceptron':
+            result = predict(data, 'perceptronClf.sav')
             
         if result == 0:
             result = "Setosa"
@@ -120,4 +123,10 @@ with modelTraining:
             result = "Virginica"
     
         st.text(f'La clasificación de la flor es: {result[0]}')
+
+
+# In[ ]:
+
+
+
 
