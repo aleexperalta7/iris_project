@@ -3,7 +3,7 @@
 
 # ## Aquí importamos la librerias que vamos a utilizar
 
-# In[1]:
+# In[2]:
 
 
 import numpy as np
@@ -13,7 +13,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 
-# In[2]:
+# In[3]:
 
 
 columns = ['Sepal length', 'Sepal width', 'Petal length', 'Petal width', 'Class_labels'] 
@@ -22,7 +22,7 @@ df = pd.read_csv('iris.data', names=columns)
 df.head()
 
 
-# In[3]:
+# In[4]:
 
 
 df.describe()
@@ -30,7 +30,7 @@ df.describe()
 
 # ## Graficamos aquí los datos y encontramos las relaciones
 
-# In[4]:
+# In[5]:
 
 
 sns.pairplot(df, hue='Class_labels')
@@ -38,7 +38,7 @@ sns.pairplot(df, hue='Class_labels')
 
 # ## Separamos la data en train y test
 
-# In[5]:
+# In[6]:
 
 
 data = df.values
@@ -46,13 +46,13 @@ X = data[:,(2,3)]
 Y = data[:,4]
 
 
-# In[6]:
+# In[7]:
 
 
 X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.2)
 
 
-# In[7]:
+# In[8]:
 
 
 from sklearn.pipeline import Pipeline
@@ -61,7 +61,7 @@ from sklearn.preprocessing import StandardScaler
 iris_pipeline = Pipeline([("std_scaler", StandardScaler())])
 
 
-# In[8]:
+# In[9]:
 
 
 X_train_tr = iris_pipeline.fit_transform(X_train)
@@ -69,7 +69,7 @@ X_train_tr = iris_pipeline.fit_transform(X_train)
 
 # ## Guardamos el .sav del pipeline
 
-# In[9]:
+# In[10]:
 
 
 from joblib import dump
@@ -78,7 +78,7 @@ dump(iris_pipeline, "iris_pipeline.sav")
 
 # ## Implementamos nuestro primer modelo "Support Machine Vector"
 
-# In[10]:
+# In[11]:
 
 
 from sklearn.svm import SVC
@@ -94,7 +94,7 @@ SVC_gridCV = GridSearchCV(SVC, param_grid, refit = True, verbose = 3, cv=5)
 SVC_gridCV.fit(X_train_tr, y_train)
 
 
-# In[11]:
+# In[12]:
 
 
 SVC_model=SVC_gridCV.best_estimator_
@@ -102,7 +102,7 @@ X_test_tr = iris_pipeline.fit_transform(X_test)
 final_prediction_svc = SVC_model.predict(X_test_tr)
 
 
-# In[12]:
+# In[13]:
 
 
 from sklearn.metrics import confusion_matrix
@@ -119,7 +119,7 @@ for i in range(conf_matrix.shape[0]):
         plt.title('Confusion Matrix', fontsize=18)
 
 
-# In[13]:
+# In[14]:
 
 
 print('Accuracy: %.3f' % accuracy_score(y_test, final_prediction_svc))
@@ -128,14 +128,14 @@ print('Recall: %.3f' % recall_score(y_test, final_prediction_svc, average='weigh
 print('F1 Score: %.3f' % f1_score(y_test, final_prediction_svc, average='weighted'))
 
 
-# In[14]:
+# In[15]:
 
 
 from sklearn.metrics import classification_report
 print(classification_report(y_test, final_prediction_svc))
 
 
-# In[15]:
+# In[16]:
 
 
 dump(SVC_model, "SVM.sav")
@@ -143,7 +143,7 @@ dump(SVC_model, "SVM.sav")
 
 # ## Implementamos nuestro primer modelo "Logistic Regression"
 
-# In[16]:
+# In[17]:
 
 
 from sklearn.linear_model import LogisticRegression
@@ -156,7 +156,7 @@ log_reg_gridCV = GridSearchCV(log_reg,param_grid, cv = 10)
 log_reg_gridCV.fit(X_train_tr,y_train)
 
 
-# In[17]:
+# In[18]:
 
 
 Log_reg_model=log_reg_gridCV.best_estimator_
@@ -164,7 +164,7 @@ X_test_tr = iris_pipeline.fit_transform(X_test)
 final_prediction_log = Log_reg_model.predict(X_test_tr)
 
 
-# In[18]:
+# In[19]:
 
 
 from sklearn.metrics import confusion_matrix
@@ -181,7 +181,7 @@ for i in range(conf_matrix.shape[0]):
         plt.title('Confusion Matrix', fontsize=18)
 
 
-# In[19]:
+# In[20]:
 
 
 print('Accuracy: %.3f' % accuracy_score(y_test, final_prediction_log))
@@ -190,14 +190,14 @@ print('Recall: %.3f' % recall_score(y_test, final_prediction_log, average='weigh
 print('F1 Score: %.3f' % f1_score(y_test, final_prediction_log, average='weighted'))
 
 
-# In[20]:
+# In[21]:
 
 
 from sklearn.metrics import classification_report
 print(classification_report(y_test, final_prediction_log))
 
 
-# In[23]:
+# In[22]:
 
 
 dump(Log_reg_model, "Log_reg.sav")
@@ -205,7 +205,7 @@ dump(Log_reg_model, "Log_reg.sav")
 
 # ## Implementamos nuestro primer modelo "Decision Tree"
 
-# In[21]:
+# In[23]:
 
 
 from sklearn.tree import DecisionTreeClassifier
@@ -219,7 +219,7 @@ dec_gridCV = GridSearchCV(dec_tree, param_grid, cv=10)
 dec_gridCV.fit(X_train_tr,y_train)
 
 
-# In[22]:
+# In[24]:
 
 
 dec_tree_model=dec_gridCV.best_estimator_
@@ -227,7 +227,7 @@ X_test_tr = iris_pipeline.fit_transform(X_test)
 final_prediction_tree = dec_tree_model.predict(X_test_tr)
 
 
-# In[23]:
+# In[25]:
 
 
 from sklearn.metrics import confusion_matrix
@@ -244,7 +244,7 @@ for i in range(conf_matrix.shape[0]):
         plt.title('Confusion Matrix', fontsize=18)
 
 
-# In[24]:
+# In[26]:
 
 
 print('Accuracy: %.3f' % accuracy_score(y_test, final_prediction_tree))
@@ -253,14 +253,14 @@ print('Recall: %.3f' % recall_score(y_test, final_prediction_tree, average='weig
 print('F1 Score: %.3f' % f1_score(y_test, final_prediction_tree, average='weighted'))
 
 
-# In[25]:
+# In[27]:
 
 
 from sklearn.metrics import classification_report
 print(classification_report(y_test, final_prediction_tree))
 
 
-# In[26]:
+# In[28]:
 
 
 dump(dec_tree_model, "Dec_tree.sav")
@@ -268,7 +268,7 @@ dump(dec_tree_model, "Dec_tree.sav")
 
 # ## Implementamos nuestro primer modelo "Voting Classifier"
 
-# In[27]:
+# In[29]:
 
 
 from sklearn.svm import SVC
@@ -284,14 +284,14 @@ voting_clf = VotingClassifier(estimators = estimators, voting = 'hard')
 voting_clf.fit(X_train_tr,y_train)
 
 
-# In[28]:
+# In[30]:
 
 
 X_test_tr = iris_pipeline.fit_transform(X_test)
 final_prediction_voting_clf = voting_clf.predict(X_test_tr)
 
 
-# In[29]:
+# In[31]:
 
 
 from sklearn.metrics import confusion_matrix
@@ -308,7 +308,7 @@ for i in range(conf_matrix.shape[0]):
         plt.title('Confusion Matrix', fontsize=18)
 
 
-# In[30]:
+# In[32]:
 
 
 print('Accuracy: %.3f' % accuracy_score(y_test, final_prediction_voting_clf))
@@ -317,15 +317,77 @@ print('Recall: %.3f' % recall_score(y_test, final_prediction_voting_clf, average
 print('F1 Score: %.3f' % f1_score(y_test, final_prediction_voting_clf, average='weighted'))
 
 
-# In[31]:
+# In[33]:
 
 
 from sklearn.metrics import classification_report
 print(classification_report(y_test, final_prediction_voting_clf))
 
 
-# In[32]:
+# In[34]:
 
 
 dump(voting_clf, "vot_clf.sav")
+
+
+# In[42]:
+
+
+from sklearn.linear_model import Perceptron
+
+
+perceptronClf= Perceptron()
+perceptronClf.fit(X_train_tr,y_train)
+
+
+# In[43]:
+
+
+X_test_tr = iris_pipeline.fit_transform(X_test)
+final_prediction_perceptronClf = perceptronClf.predict(X_test_tr)
+
+
+# In[44]:
+
+
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
+conf_matrix = confusion_matrix(y_test, final_prediction_perceptronClf)
+
+fig, ax = plt.subplots(figsize=(5, 5))
+ax.matshow(conf_matrix, cmap=plt.cm.Oranges, alpha=0.3)
+for i in range(conf_matrix.shape[0]):
+    for j in range(conf_matrix.shape[1]):
+        ax.text(x=j, y=i,s=conf_matrix[i, j], va='center', ha='center', size='xx-large')
+        plt.xlabel('Predictions', fontsize=18)
+        plt.ylabel('Actuals', fontsize=18)
+        plt.title('Confusion Matrix', fontsize=18)
+
+
+# In[45]:
+
+
+print('Accuracy: %.3f' % accuracy_score(y_test, final_prediction_perceptronClf))
+print('Precision: %.3f' % precision_score(y_test, final_prediction_perceptronClf, average='weighted'))
+print('Recall: %.3f' % recall_score(y_test, final_prediction_perceptronClf, average='weighted'))
+print('F1 Score: %.3f' % f1_score(y_test, final_prediction_perceptronClf, average='weighted'))
+
+
+# In[46]:
+
+
+from sklearn.metrics import classification_report
+print(classification_report(y_test, final_prediction_perceptronClf))
+
+
+# In[47]:
+
+
+dump(perceptronClf, "perceptronClf.sav")
+
+
+# In[ ]:
+
+
+
 
